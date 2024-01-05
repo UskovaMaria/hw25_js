@@ -78,3 +78,7 @@ input:focus {
 .todo-item__delBtn {
   margin-left: auto;
 }
+
+.todo-clear {
+  margin-top: 20px;
+}

@@ -53,9 +53,13 @@ function getFilteredTodos(data) {
 }
 
 function delTodo() {
-  todos.splice((this.parentElement.dataset.id - 1), 1);
-  renderTodoList(todos, todoListEl);
-  return;
+  const id = parseInt(this.parentElement.dataset.id);
+  const index = todos.findIndex(todo => todo.id === id);
+
+  if (index !== -1) {
+    todos.splice(index, 1);
+    renderTodoList(todos, todoListEl);
+  }
 }
 
 function renderTodoList(rawData, parentEl) {
@@ -90,6 +94,7 @@ function renderTodoList(rawData, parentEl) {
   parentEl.innerHTML = todoItems;
   
   todoChksEls = doc.querySelectorAll('.todo-item__completed');
+  console.log(todoChksEls);
   if (!todoChksEls.length) {
     console.warn('Todo checks not found !!!');
     return;
@@ -137,8 +142,30 @@ function checkValidArgs(data, parentEl) {
 // const jsonData = JSON.stringify(todos);
 // localStorage.setItem('todos', jsonData);
 
-const rawData = localStorage.getItem('todos');
-const userData = JSON.parse(rawData);
-console.log(userData);
+// const rawData = localStorage.getItem('todos');
+// const userData = JSON.parse(rawData);
+// console.log(userData);
 
 
+clearTodo.onclick = function() {
+  todos.length = 0; // Clear the todos array
+  renderTodoList(todos, todoListEl);
+  saveTodosToLocalStorage();
+};
+
+function saveTodosToLocalStorage() {
+  const jsonData = JSON.stringify(todos);
+  localStorage.setItem('todos', jsonData);
+}
+
+// Load todos from local storage when the page loads
+window.onload = function() {
+  const rawData = localStorage.getItem('todos');
+  const userData = JSON.parse(rawData);
+  console.log(userData);
+
+  if (userData && Array.isArray(userData)) {
+    todos.push(...userData);
+    renderTodoList(todos, todoListEl);
+  }
+};
